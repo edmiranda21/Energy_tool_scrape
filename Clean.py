@@ -40,7 +40,7 @@ def transform_long_clean(df_old):
     df_filtered['Day'] = df_filtered.index.day_name()
     #
     # # Save the long format to a CSV file
-    df_filtered.to_csv(f'table_cleaned_long{today}.csv', encoding='utf8', index=True)
+    df_filtered.to_csv(f'table_cleaned_longDiciembre.csv', encoding='utf8', index=True)
     return print(df_filtered.head())
 
 
@@ -82,4 +82,4 @@ def clean(file_name):
 
     return print(f"The data has been saved in a .csv file with name: 'table_cleaned.csv'")
 
-clean('table16-05-2025.csv')
+clean('table_agosto_diciembre_2024.csv')
