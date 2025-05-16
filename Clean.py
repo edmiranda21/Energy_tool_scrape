@@ -1,8 +1,48 @@
 import pandas as pd
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 # # Read only the first 6 rows
 import pandas as pd
+pd.options.mode.copy_on_write = True
+
+today = datetime.today().date().strftime("%d-%m-%Y")
+
+# Create a function than transform and clean the data
+def transform_long_clean(df_old):
+    # Long form ideal
+    df = df_old.melt(id_vars=['time'], var_name="day", value_name="MWh")
+    df = df.sort_values(by=['time', 'day']).reset_index(drop=True)
+    df['day'] = df['day'].astype(str)
+    df['time'] = df['time'].astype(str)
+
+    # Clean
+    df['Index'] = df['day'] + '-' + df['time']
+    df['Index'] = pd.to_datetime(df['Index'])
+    df.set_index('Index', inplace=True)
+    df.sort_index(inplace=True)
+
+    # New dataframe with time set as hourly
+    min_date = df.index.min()
+    max_date = df.index.max()
+    date_range = pd.date_range(min_date,
+                               max_date,
+                               freq='H')
+
+    clean_dataframe = pd.DataFrame(index=date_range)
+    clean_dataframe.index = clean_dataframe.index.strftime('%Y-%m-%d-%H:%M:%S')
+
+    # Filter original dataframe to keep only the dates hourly
+    df_filtered = df[df.index.isin(clean_dataframe.index)]
+
+    df_filtered['Hora'] = df_filtered.index.strftime('%H:%M')
+    df_filtered['Month'] =df_filtered.index.month_name()
+    df_filtered['Year'] = df_filtered.index.year
+    df_filtered['Day'] = df_filtered.index.day_name()
+    #
+    # # Save the long format to a CSV file
+    df_filtered.to_csv(f'table_cleaned_long{today}.csv', encoding='utf8', index=True)
+    return print(df_filtered.head())
+
 
 def clean(file_name):
     # Step 1: Extract line 0
@@ -32,17 +72,14 @@ def clean(file_name):
     df['time'] = pd.to_datetime(df['time']).dt.strftime('%H:%M')
     df = df.sort_values(by='time')
 
-    # Long form
-    df_long = df.melt(id_vars=['time'], var_name="day", value_name="MWh")
-    df_long = df_long.sort_values(by=['time','day']).reset_index(drop=True).set_index('time')
-    # Save the long format to a CSV file
-    df_long.to_csv(f'table_cleaned_long.csv', encoding='utf8', index=True)
+    transform_long_clean(df)
 
-    df.set_index('time', inplace=True)
+
+    # df.set_index('time', inplace=True)
 
     # Guardar información en un archivo .csv
-    df.to_csv(f'table_cleaned.csv', encoding='utf8', index=True)
+    # df.to_csv(f'table_cleaned.csv', encoding='utf8', index=True)
 
     return print(f"The data has been saved in a .csv file with name: 'table_cleaned.csv'")
 
-clean('table1.csv')
+clean('table16-05-2025.csv')
