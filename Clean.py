@@ -8,7 +8,7 @@ pd.options.mode.copy_on_write = True
 today = datetime.today().date().strftime("%d-%m-%Y")
 
 # Create a function than transform and clean the data
-def transform_long_clean(df_old):
+def transform_long_clean(df_old, save_name):
     # Long form ideal
     df = df_old.melt(id_vars=['time'], var_name="day", value_name="MWh")
     df = df.sort_values(by=['time', 'day']).reset_index(drop=True)
@@ -43,11 +43,11 @@ def transform_long_clean(df_old):
     df_filtered['Day'] = df_filtered.index.day_name()
     #
     # # Save the long format to a CSV file
-    df_filtered.to_csv(f'Table_clean_mayo_agosto.csv', encoding='utf8', index=True)
+    df_filtered.to_csv(f'{save_name}.csv', encoding='utf8', index=True)
     return print(df_filtered.head())
 
 
-def clean(file_name):
+def clean(file_name, save_name):
     # Step 1: Extract line 0
     with open(file_name, 'r') as file:
         line0 = next(file).strip().strip('"').split(',')  # Get line 0, remove newline and quotes
@@ -75,7 +75,7 @@ def clean(file_name):
     df['time'] = pd.to_datetime(df['time']).dt.strftime('%H:%M')
     df = df.sort_values(by='time')
 
-    transform_long_clean(df)
+    transform_long_clean(df, save_name)
 
 
     # df.set_index('time', inplace=True)
@@ -83,6 +83,4 @@ def clean(file_name):
     # Guardar información en un archivo .csv
     # df.to_csv(f'table_cleaned.csv', encoding='utf8', index=True)
 
-    return print(f"The data has been saved in a .csv file with name: 'table_cleaned.csv'")
-
-clean('table_mayo_agosto_2024.csv')
+    return print(f"The data has been saved in a .csv file with name: '{save_name}.csv'")
