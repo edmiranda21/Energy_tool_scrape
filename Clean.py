@@ -20,6 +20,8 @@ def transform_long_clean(df_old):
     df['Index'] = pd.to_datetime(df['Index'])
     df.set_index('Index', inplace=True)
     df.sort_index(inplace=True)
+    # Drop day and time
+    df.drop(columns=['day', 'time'], inplace=True)
 
     # New dataframe with time set as hourly
     min_date = df.index.min()
@@ -34,13 +36,14 @@ def transform_long_clean(df_old):
     # Filter original dataframe to keep only the dates hourly
     df_filtered = df[df.index.isin(clean_dataframe.index)]
 
+    # df_filtered = df.copy()
     df_filtered['Hora'] = df_filtered.index.strftime('%H:%M')
     df_filtered['Month'] =df_filtered.index.month_name()
     df_filtered['Year'] = df_filtered.index.year
     df_filtered['Day'] = df_filtered.index.day_name()
     #
     # # Save the long format to a CSV file
-    df_filtered.to_csv(f'table_cleaned_longDiciembre.csv', encoding='utf8', index=True)
+    df_filtered.to_csv(f'Table_clean_mayo_agosto.csv', encoding='utf8', index=True)
     return print(df_filtered.head())
 
 
@@ -82,4 +85,4 @@ def clean(file_name):
 
     return print(f"The data has been saved in a .csv file with name: 'table_cleaned.csv'")
 
-clean('table_agosto_diciembre_2024.csv')
+clean('table_mayo_agosto_2024.csv')

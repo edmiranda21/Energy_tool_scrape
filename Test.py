@@ -6,7 +6,7 @@ import pandas as pd
 pd.options.mode.copy_on_write = True
 
 # file_name = 'table1.csv'
-file_name = 'table16-05-2025.csv'
+file_name = 'table_enero_mayo_2024.csv'
 
 with open(file_name, 'r') as file:
     line0 = next(file).strip().strip('"').split(',')  # Get line 0, remove newline and quotes
@@ -23,17 +23,39 @@ def find_first_non_null_index(file_path):
     return None
 
 skip_row = find_first_non_null_index(file_name)
-print(skip_row)
+#%%
+# Clean try
+with open(file_name, 'r') as f:
+    reader = csv.reader(f)
 
-df = pd.read_csv(file_name, header=None, skiprows=skip_row, on_bad_lines='skip')
+    # Step 1: Read the base date from the first row
+    base_date_str = next(reader) # e.g., "Columns names as: 2024-01-01"
+    values = list(csv.reader(f))[skip_row-1:]  # Each row is a list of values with the first as hour and the rest as values
 
-# Add the column names with the line0, starting from the second element
-df.columns = ['time'] + line0
+print(base_date_str)
+# print(values)
+#%%
+for i in range(len(values)):
+    hour_value = values[i][0]
+    power_value = values[i][1:]
 
-# df['time'] = df['time'].astype(str)  # Remove spaces from the time column
-# # Find the "24:00" and replace it with "00:00"
-# df['time'] = df['time'].replace('24:00', '00:00')
-# # Transform the time column to datetime
-# df['time'] = pd.to_datetime(df['time']).dt.strftime('%H:%M')
-# df = df.sort_values(by='time')
-print(df)
+    # Extrac the first item of each row in power_value
+    for item in power_value[:1]:
+        print(item)
+
+#%%
+# For each date test the first 5 days
+count = 0
+for date in base_date_str:
+    for i in range(len(values)):
+        hour_value = values[i][0]
+        power_value = values[i][1+count]
+        # Sum one place to the power_value
+        print(f"Column: {count}, Date: {date}, Hour: {hour_value}, Value: {power_value}")
+
+    count = count + 1
+
+
+    # Extrac the first item of each row in power_value
+    #     for item in power_value[:1]:
+    #         print(f"Date: {date}, Hour: {hour_value}, Value: {item}")
