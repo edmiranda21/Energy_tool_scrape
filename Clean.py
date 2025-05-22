@@ -41,6 +41,7 @@ def transform_long_clean(df_old, save_name):
     df_filtered['Month'] =df_filtered.index.month_name()
     df_filtered['Year'] = df_filtered.index.year
     df_filtered['Day'] = df_filtered.index.day_name()
+    df_filtered['MWh'] = df_filtered['MWh'].str.replace(',', '').astype(float)
     #
     # # Save the long format to a CSV file
     df_filtered.to_csv(f'{save_name}.csv', encoding='utf8', index=True)
