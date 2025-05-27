@@ -1,0 +1,104 @@
+import pandas as pd
+import csv
+from datetime import datetime, timedelta
+# # Read only the first 6 rows
+import pandas as pd
+import os
+pd.options.mode.copy_on_write = True
+today = datetime.today().date().strftime("%d-%m-%Y")
+
+
+# Create a function than transform and clean the data
+def transform_long_clean(df_old):
+    # Long form ideal
+    df = df_old.melt(id_vars=['time'], var_name="day", value_name="MWh")
+    df = df.sort_values(by=['time', 'day']).reset_index(drop=True)
+    df['day'] = df['day'].astype(str)
+    df['time'] = df['time'].astype(str)
+
+    # Clean
+    df['Index'] = df['day'] + '-' + df['time']
+    df['Index'] = pd.to_datetime(df['Index'])
+    df.set_index('Index', inplace=True)
+    df.sort_index(inplace=True)
+    # Drop day and time
+    df.drop(columns=['day', 'time'], inplace=True)
+
+    # New dataframe with time set as hourly
+    min_date = df.index.min()
+    max_date = df.index.max()
+    date_range = pd.date_range(min_date,
+                               max_date,
+                               freq='H')
+
+    clean_dataframe = pd.DataFrame(index=date_range)
+    clean_dataframe.index = clean_dataframe.index.strftime('%Y-%m-%d-%H:%M:%S')
+
+    # Filter original dataframe to keep only the dates hourly
+    df_filtered = df[df.index.isin(clean_dataframe.index)]
+
+    # df_filtered = df.copy()
+    df_filtered['Hora'] = df_filtered.index.strftime('%H:%M')
+    df_filtered['Month'] =df_filtered.index.month_name()
+    df_filtered['Year'] = df_filtered.index.year
+    df_filtered['Day'] = df_filtered.index.day_name()
+    df_filtered['MWh'] = df_filtered['MWh'].str.replace(',', '').astype(float)
+    #
+
+    return df_filtered
+
+
+def clean(file_name):
+    # Step 1: Extract line 0
+    with open(file_name, 'r') as file:
+        line0 = next(file).strip().strip('"').split(',')  # Get line 0, remove newline and quotes
+    # print(len(line0))
+    # Step2: find the values
+    def find_first_non_null_index(file_path):
+        with open(file_path, 'r') as file:
+            reader = list(csv.reader(file))
+            for i in range(len(reader) - 1, 0, -1):
+                if not reader[i]:
+                    return int(i+1)
+        return None
+    skip_row = find_first_non_null_index(file_name)
+
+    # Step 2: Read the data starting from the time-value pairs
+    df = pd.read_csv(file_name, header=None, skiprows=skip_row)
+
+    # Add the column names with the line0, starting from the second element
+    df.columns = ['time'] + line0
+
+    df['time'] = df['time'].astype(str) # Remove spaces from the time column
+    # Find the "24:00" and replace it with "00:00"
+    df['time'] = df['time'].replace('24:00', '00:00')
+    # Transform the time column to datetime
+    df['time'] = pd.to_datetime(df['time']).dt.strftime('%H:%M')
+    df = df.sort_values(by='time')
+
+    # Clean each file from a list
+
+    dataframe = transform_long_clean(df)
+    print(f"Clean data of: '{file_name}.csv'")
+    return dataframe
+
+# Clean_year and save the data
+def clean_year(file_names, save_name):
+
+    df_new = []
+    for file in file_names:
+        df_clean = clean(file)
+        df_new.append(df_clean)
+    df = pd.concat(df_new)
+    # Save the joined dataframe to a new CSV file
+    df.to_csv(f'Generacion_{save_name}.csv', index=True)
+    print(f'Numero de datos: {len(df)}')
+    # Erase the files_names
+    for file in file_names:
+        try:
+            os.remove(file)
+        except OSError as e:
+            print(f"Error deleting file {file}: {e}")
+
+
+    return print(f"Saved as 'Generacion_{save_name}.csv'")

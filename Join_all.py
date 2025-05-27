@@ -14,8 +14,7 @@ pd.options.mode.copy_on_write = True
 #     'Table_clean_septiembre_diciembre.csv',
 # ]
 file_names = [
-'Generacion_2024.csv',
-    'Generacion_2025.csv'
+
 ]
 
 # Extract the column names from the first file with pandas

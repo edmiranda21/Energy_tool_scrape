@@ -9,7 +9,6 @@ month_list = ['ENERO','FEBRERO', 'MARZO','ABRIL']
 month_list_2 = ['MAYO', 'JUNIO', 'JULIO', 'AGOSTO']
 month_list_3 = ['SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 year_selection = 2024
-save_name = "Enero_abril_2024"
 
 # Function to save the table content to a CSV file
 def save_to_csv(table_locator, save_name):
@@ -31,157 +30,160 @@ def save_to_csv(table_locator, save_name):
     return print(f'Done writing the table to CSV: {save_name}.csv')
 
 
+def extract_january_april(year_selection):
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.set_viewport_size({"width": 1280, "height": 720})
+        page.goto("https://reportesbi.amm.org.gt/knowage/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE")
+        page.get_by_role("link", name="Generación").click()
+        page.get_by_role("link", name="Generación por Hora").click()
+        page.wait_for_load_state("networkidle")
 
-with sync_playwright() as playwright:
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
-    page.set_viewport_size({"width": 1280, "height": 720})
-    page.goto("https://reportesbi.amm.org.gt/knowage/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE")
-    page.get_by_role("link", name="Generación").click()
-    page.get_by_role("link", name="Generación por Hora").click()
-    page.wait_for_load_state("networkidle")
+        # Scroll to the bottom of the page
+        for x in range(1, 2):
+            page.mouse.wheel(0, 500)
+            time.sleep(1)
 
-    # Scroll to the bottom of the page
-    for x in range(1, 2):
-        page.mouse.wheel(0, 500)
-        time.sleep(1)
+            # Enter the new page table to select data
+            page.locator("#iframeDoc").content_frame.locator("iframe").content_frame.locator(
+                "iframe[name=\"documentFrame\"]").content_frame.locator("[id=\"\\31 531756345950\"]").get_by_role(
+                "button").click()
+            time.sleep(5)
+            # Filter the table
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
+                                                                                                        name="Parameters").nth(
+                1).click()
 
-        # Enter the new page table to select data
-        page.locator("#iframeDoc").content_frame.locator("iframe").content_frame.locator(
-            "iframe[name=\"documentFrame\"]").content_frame.locator("[id=\"\\31 531756345950\"]").get_by_role(
-            "button").click()
-        time.sleep(5)
-        # Filter the table
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
-                                                                                                    name="Parameters").nth(
-            1).click()
-
-        # Deselect the previous selected values YEAR
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_8 span").nth(
-            1).click()
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                    name="2025").locator(
-            "div").first.click()
-
-        # Select the desired year. Default is 2025
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                    name=f"{year_selection}").locator(
-            "div").first.click()
-
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
-
-        # Deselect the previous selected values MONTH
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_42 span").nth(
-            1).click()
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                    name="ENERO").locator(
-            "div").first.click()
-
-        # Select the desired months, to get hourly data only a period of every 4 months can be select at time.
-        # Default month is ENERO
-        for month in month_list:
+            # Deselect the previous selected values YEAR
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_8 span").nth(
+                1).click()
             page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                        name=f"{month}").locator(
+                                                                                                        name="2025").locator(
                 "div").first.click()
 
-        # Select the previous selected values DAY
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_56 span").nth(
-            1).click()
-
-        # Select all days from 2 to 31. Day 1 is default selected
-        for day in range(2,32):
-            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option", name=f"{day}",
-                                                                                                        exact=True).locator(
-                "div").first.click()
-
-
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
-                                                                                                    name="Ejecutar").click()
-        print('Waiting the table to load...')
-        time.sleep(1)
-
-        # Wait for the table to be visible
-        table_locator = page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
-            "iframe[name=\"documentFrame\"]").content_frame.get_by_role("table")
-
-        # Find the table save its content
-        save_to_csv(table_locator, save_name)
-
-        """
-        See the second list of months
-        """
-
-        # Find the parameters button and click it
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
-                                                                                                    name="Parameters").nth(
-            1).click()
-        # Deselect the previous selected values MONTH
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_42 span").nth(
-            1).click()
-        for month in month_list:
+            # Select the desired year. Default is 2025
             page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                        name=f"{month}").locator(
+                                                                                                        name=f"{year_selection}").locator(
                 "div").first.click()
 
-        # Another list of months to select
-        for month in month_list_2:
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
+
+            # Deselect the previous selected values MONTH
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_42 span").nth(
+                1).click()
             page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                        name=f"{month}").locator(
+                                                                                                        name="ENERO").locator(
                 "div").first.click()
 
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
-                                                                                                    name="Ejecutar").click()
-        print('Waiting the table to load...')
-        time.sleep(1)
+            # Select the desired months, to get hourly data only a period of every 4 months can be select at time.
+            # Default month is ENERO
+            for month in month_list:
+                page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
+                                                                                                            name=f"{month}").locator(
+                    "div").first.click()
 
-        # Wait for the table to be visible
-        table_locator = page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
-            "iframe[name=\"documentFrame\"]").content_frame.get_by_role("table")
+            # Select the previous selected values DAY
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_56 span").nth(
+                1).click()
 
-        # Find the table save its content
-        save_name = "Mayo_agosto_2024"
-        save_to_csv(table_locator, save_name)
+            # Select all days from 2 to 31. Day 1 is default selected
+            for day in range(2,32):
+                page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option", name=f"{day}",
+                                                                                                            exact=True).locator(
+                    "div").first.click()
 
-        """
-                See the third list of months
-                """
 
-        # Find the parameters button and click it
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
-                                                                                                    name="Parameters").nth(
-            1).click()
-        # Deselect the previous selected values MONTH
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_42 span").nth(
-            1).click()
-        for month in month_list_2:
-            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                        name=f"{month}").locator(
-                "div").first.click()
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
+                                                                                                        name="Ejecutar").click()
+            print('Waiting the table to load...')
+            time.sleep(1)
 
-        # Another list of months to select
-        for month in month_list_3:
-            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                        name=f"{month}").locator(
-                "div").first.click()
+            # Wait for the table to be visible
+            table_locator = page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
+                "iframe[name=\"documentFrame\"]").content_frame.get_by_role("table")
 
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
-        page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
-                                                                                                    name="Ejecutar").click()
-        print('Waiting the table to load...')
-        time.sleep(1)
+            save_name = f"Enero_abril_{year_selection}"
+            # Find the table save its content
+            save_to_csv(table_locator, save_name)
 
-        # Wait for the table to be visible
-        table_locator = page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
-            "iframe[name=\"documentFrame\"]").content_frame.get_by_role("table")
+            """
+            See the second list of months
+            """
 
-        # Find the table save its content
-        save_name = "Septiembre_diciembre_2024"
-        save_to_csv(table_locator, save_name)
+            # Find the parameters button and click it
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
+                                                                                                        name="Parameters").nth(
+                1).click()
+            # Deselect the previous selected values MONTH
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_42 span").nth(
+                1).click()
+            for month in month_list:
+                page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
+                                                                                                            name=f"{month}").locator(
+                    "div").first.click()
 
-        # ---------------------
-        context.close()
-        browser.close()
+            # Another list of months to select
+            for month in month_list_2:
+                page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
+                                                                                                            name=f"{month}").locator(
+                    "div").first.click()
+
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
+                                                                                                        name="Ejecutar").click()
+            print('Waiting the table to load...')
+            time.sleep(1)
+
+            # Wait for the table to be visible
+            table_locator = page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
+                "iframe[name=\"documentFrame\"]").content_frame.get_by_role("table")
+
+            # Find the table save its content
+            save_name = f"Mayo_agosto_{year_selection}"
+            save_to_csv(table_locator, save_name)
+
+            """
+            See the third list of months
+            """
+
+            # Find the parameters button and click it
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
+                                                                                                        name="Parameters").nth(
+                1).click()
+            # Deselect the previous selected values MONTH
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("#select_42 span").nth(
+                1).click()
+            for month in month_list_2:
+                page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
+                                                                                                            name=f"{month}").locator(
+                    "div").first.click()
+
+            # Another list of months to select
+            for month in month_list_3:
+                page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
+                                                                                                            name=f"{month}").locator(
+                    "div").first.click()
+
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
+            page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
+                                                                                                        name="Ejecutar").click()
+            print('Waiting the table to load...')
+            time.sleep(1)
+
+            # Wait for the table to be visible
+            table_locator = page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
+                "iframe[name=\"documentFrame\"]").content_frame.get_by_role("table")
+
+            # Find the table save its content
+            save_name = f"Septiembre_diciembre_{year_selection}"
+            save_to_csv(table_locator, save_name)
+
+            # ---------------------
+            context.close()
+            browser.close()
+
+    return print('Done Extracting')
