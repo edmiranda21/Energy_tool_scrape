@@ -6,7 +6,8 @@ import datetime
 
 
 month_list = ['MAYO']
-save_name = "Mayo_2025"
+year = '2025'
+save_name = "Mayo"
 
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=False)
@@ -40,7 +41,7 @@ with sync_playwright() as playwright:
                                                                                                     name="2025").locator(
             "div").first.click()
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("option",
-                                                                                                    name="2024").locator(
+                                                                                                    name=f"{year}").locator(
             "div").first.click()
 
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator("md-backdrop").click()
@@ -84,7 +85,7 @@ with sync_playwright() as playwright:
         print("lines")
         print(lines)
 
-        with open(f'{save_name}.csv', 'w', newline='') as csvfile:
+        with open(f'{save_name}_{year}.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
 
             # Write each line to the CSV file

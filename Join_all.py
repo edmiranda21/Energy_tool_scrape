@@ -32,6 +32,7 @@ for file_name in file_names:
     df_new.append(df_temp)
 
 df= pd.concat(df_new, ignore_index=True)
+df = df['MWh'].str.replace(',', '').astype(float)
 # df.drop(columns=['time', 'day'], inplace=True)
 # df.rename(columns={'Day2': 'Day'})
 
