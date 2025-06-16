@@ -5,15 +5,8 @@ from pathlib import Path
 import os
 from datetime import datetime, timedelta
 
-technology_files = '/¨Exportacion'
-tecnology_name = 'Exportación'
-home = os.getcwd()
-
-# Create the full path for the new folder
-file_path = Path(home + technology_files)
-
 # Search files in the directory
-def clean_tecnology(file):
+def clean_tecnology(file, tecnology_name):
     # Read the entire file as text to analyze structure
     with open(file, 'r', encoding='utf-8') as file_name:
         content = file_name.read()
@@ -97,19 +90,26 @@ def clean_tecnology(file):
     return df
 
 # Iterate through all files in the directory
-df_new = []
-for file in file_path.glob('*.csv'):
-    df_clean = clean_tecnology(file)
-    df_new.append(df_clean)
-    print(f'Archivo: {file}'
-          f'Numero de datos: {len(df_clean)}')
+def clean_technology(technology_files, tecnology_name):
 
-df = pd.concat(df_new)
-# Sort by index
-df.sort_index(inplace=True)
-year_name = min(ts.index.year)
-print(df.head(2))
-print(df.tail(2))
-df.to_csv(f'Clean_{tecnology_name}_{year_name}.csv', index=True)
+    # Get the current working directory
+    home = os.getcwd()
+    # Create the full path for the new folder
+    file_path = Path(home + f'/{technology_files}')
+
+    df_new = []
+    for file in file_path.glob('*.csv'):
+        df_clean = clean_tecnology(file, tecnology_name)
+        df_new.append(df_clean)
+        print(f'File: {file} '
+              f'Total data: {len(df_clean)}')
+
+    df = pd.concat(df_new)
+    # Sort by index
+    df.sort_index(inplace=True)
+    year_name = min(df.index.year)
+    df.to_csv(f'Clean_{tecnology_name}_{year_name}.csv', index=True)
+    print(f'Data file save as: Clean_{tecnology_name}_{year_name}.csv '
+          f'Total data: {len(df)}')
 
 

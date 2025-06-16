@@ -47,10 +47,10 @@ Energy_tool_scrape/
 ├── Control.py                            # A simple controller for the scrapers
 ├── One_year_extract.py                   # Scraper for energy demand data
 │   └── Clean_entire_year.py              # Cleaning script for energy demand data
-│   └── Extrac_desited_month_year.py      # Scraper for energy demand data for a specific month and year
+│   └── Extract_desired_month_year.py      # Scraper for energy demand data for a specific month and year
 │
 ├── One_year_extract_technology.py        # Scraper for generation by technology type
-│   └── Clean_tecnology_entire_data.py    # Cleaning script for generation by technology type
+│   └── Clean_technology_entire_data.py    # Cleaning script for generation by technology type
 ├── Clean data                            # Folder containing cleaned data files (Some files to preview)
 ├── requirements.txt                      # Python dependencies
 ├── README.md                             # Project documentation

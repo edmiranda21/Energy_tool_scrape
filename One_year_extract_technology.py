@@ -6,13 +6,6 @@ import os
 import calendar
 from datetime import datetime, date
 
-"""
-Objective: Extract hole year of one technology from the AMM website.
-The result: Because the website is buggy the max data range is three months each trimester will produce a csv file.
-Note:
-Sometimes it takes a lot of time to display the data and appear some 
-pop ups messages. So its necessary to click a popup message, reload the page or restart the script. 
-"""
 
 def create_user_folder(folder_name):
     """
@@ -43,6 +36,14 @@ def create_user_folder(folder_name):
 
 # Function to save the table content to a CSV file
 def save_to_csv(table_locator, save_name, tecnologia):
+    """
+    Locate the table and save its content to a CSV file.
+    Args:
+        table_locator: The locator for the table element, obtained from Playwright.
+
+    Returns:
+        None: The function saves the table content to a CSV file, and prints a confirmation message.
+    """
     # Extract the table content
     table_content = table_locator.inner_text()
     print("EXTRACTING... TABLE CONTENT...")
@@ -63,7 +64,7 @@ def save_to_csv(table_locator, save_name, tecnologia):
 
     return print(f'Done writing the table: {save_name}.csv')
 
-# Function to get the last day of a month
+# Function to get the last day of a month for the first trimester January to March
 def last_day_of_month(year, month):
     return calendar.monthrange(year, month)[1]
 
@@ -72,8 +73,13 @@ def extract_tecnologie(tecnologia, year_selection):
     The following code is to extract the table from the page AMM with playwright tool
     This code is for january to april the year is selected in the code and the name of the csv file
 
-   #Note: Sometimes because the site is buggy,
-   its necessary to click a popup message or reload the page at the beginning.
+   Note:
+       Sometimes because the site is buggy, its necessary to click a popup message or
+       reload the page at the beginning.
+
+    Returns:
+        None: The function saves the table content to a CSV file, and prints a confirmation message.
+
     """
 
     # Trimester 1: Jan-Mar
@@ -293,10 +299,3 @@ def extract_tecnologie(tecnologia, year_selection):
         browser.close()
 
     return print('Done Extracting')
-
-# Define the inputs
-year_selection = 2024
-tecnologia = 'Turbina de Gas'
-
-
-extract_tecnologie(tecnologia, year_selection)

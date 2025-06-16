@@ -11,6 +11,14 @@ year_selection = 2024
 
 # Function to save the table content to a CSV file
 def save_to_csv(table_locator, save_name):
+    """
+    Locate the table and save its content to a CSV file.
+    Args:
+        table_locator: The locator for the table element, obtained from Playwright.
+
+    Returns:
+        None: The function saves the table content to a CSV file, and prints a confirmation message.
+    """
     # Extract the table content
     table_content = table_locator.inner_text()
     print("EXTRACTING... TABLE CONTENT...")
@@ -29,7 +37,16 @@ def save_to_csv(table_locator, save_name):
     return print(f'Done writing the table to CSV: {save_name}.csv')
 
 
-def extract_january_april(year_selection):
+def extract_generation_data(year_selection):
+    """
+    Extracts generation data for a specific year from the AMM website using Playwright.
+
+       Args:
+        year_selection (int): The year for which the generation data will be extracted.
+
+    Returns:
+        None: The function performs the extraction and saves the data to CSV files, each file corresponds a four-month period.
+       """
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=False)
         context = browser.new_context()
