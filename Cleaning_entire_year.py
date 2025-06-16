@@ -5,9 +5,6 @@ from datetime import datetime, timedelta
 import pandas as pd
 import os
 pd.options.mode.copy_on_write = True
-today = datetime.today().date().strftime("%d-%m-%Y")
-
-
 
 def transform_long_clean(df_old):
     """
