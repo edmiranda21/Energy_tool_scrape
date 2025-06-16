@@ -8,11 +8,7 @@ pd.options.mode.copy_on_write = True
 # Join all the files
 
 # List of files to join
-# file_names = [
-#     'Table_clean_enero_abril.csv',
-#     'Table_clean_mayo_agosto.csv',
-#     'Table_clean_septiembre_diciembre.csv',
-# ]
+
 file_names = [
 
 ]
@@ -42,7 +38,7 @@ df.set_index('Index', inplace=True)
 
 
 # Save the joined dataframe to a new CSV file
-df.to_csv('Generacion_2024_2025.csv', index=True)
+df.to_csv('File.csv', index=True)
 
 # Check for each Month the number of hours
 # df[df['Month'] == 'January'].groupby('day')['MWh'].sum()
