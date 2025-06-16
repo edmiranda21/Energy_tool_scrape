@@ -1,7 +1,6 @@
 import pandas as pd
 import csv
 from datetime import datetime, timedelta
-# # Read only the first 6 rows
 import pandas as pd
 import os
 pd.options.mode.copy_on_write = True
