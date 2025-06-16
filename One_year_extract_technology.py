@@ -297,7 +297,7 @@ def extract_tecnologie(tecnologia, year_selection):
 
 # Define the inputs
 year_selection = 2024
-tecnologia = '¨Exportacion'
+tecnologia = 'Turbina de Gas'
 
 
 extract_tecnologie(tecnologia, year_selection)

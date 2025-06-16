@@ -6,6 +6,7 @@ import os
 from datetime import datetime, timedelta
 
 technology_files = '/¨Exportacion'
+tecnology_name = 'Exportación'
 home = os.getcwd()
 
 # Create the full path for the new folder
@@ -76,7 +77,7 @@ def clean_tecnology(file):
                         continue
     # Convert to DataFrame
     df = pd.DataFrame(data, columns=['Date', 'Hour', 'Day (Spanish)', 'Potencia'])
-    df['Tecnología'] = 'Exportación'
+    df['Tecnología'] = tecnology_name
 
     # Create a datetime column for easier analysis
     df['Index'] = pd.to_datetime(df['Date'] + ' ' + df['Hour'])
@@ -106,8 +107,9 @@ for file in file_path.glob('*.csv'):
 df = pd.concat(df_new)
 # Sort by index
 df.sort_index(inplace=True)
+year_name = min(ts.index.year)
 print(df.head(2))
 print(df.tail(2))
-df.to_csv('Clean_Exportacion_2024.csv', index=True)
+df.to_csv(f'Clean_{tecnology_name}_{year_name}.csv', index=True)
 
 
