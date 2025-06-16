@@ -20,10 +20,11 @@ def transform_long_clean(df_old, save_name):
     df['Index'] = pd.to_datetime(df['Index'])
     df.set_index('Index', inplace=True)
     df.sort_index(inplace=True)
+
     # Drop day and time
     df.drop(columns=['day', 'time'], inplace=True)
 
-    # New dataframe with time set as hourly
+    # New dataframe with a time set as hourly
     min_date = df.index.min()
     max_date = df.index.max()
     date_range = pd.date_range(min_date,
@@ -33,7 +34,7 @@ def transform_long_clean(df_old, save_name):
     clean_dataframe = pd.DataFrame(index=date_range)
     clean_dataframe.index = clean_dataframe.index.strftime('%Y-%m-%d-%H:%M:%S')
 
-    # Filter original dataframe to keep only the dates hourly
+    # Filter the original dataframe to keep only the dates hourly
     df_filtered = df[df.index.isin(clean_dataframe.index)]
 
     # df_filtered = df.copy()
@@ -42,8 +43,8 @@ def transform_long_clean(df_old, save_name):
     df_filtered['Year'] = df_filtered.index.year
     df_filtered['Day'] = df_filtered.index.day_name()
     df_filtered['MWh'] = df_filtered['MWh'].str.replace(',', '').astype(float)
-    #
-    # # Save the long format to a CSV file
+
+    # Save the long format to a CSV file
     df_filtered.to_csv(f'{save_name}.csv', encoding='utf8', index=True)
     return print(df_filtered.head())
 
