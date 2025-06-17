@@ -12,28 +12,28 @@ from Clean_technology_entire_data import *
 Extract data for a specific year
 """
 # Inputs to work
-# generation_year = 2024
-# # Call the function to clean the year
+# generation_year = 2008
+# Call the function to clean the year
 # extract_generation_data(generation_year)
 #
 # """
 # Clean files later will be saved as a unique files used will be erased
 # """
-# # Inputs to work
-# save_name = 'May_2025'
-# file_names = [ 'Mayo_2025.csv'
-#     # f'Enero_abril_{save_name}.csv',
-#     # f'Mayo_agosto_{save_name}.csv',
-#     # f'Septiembre_diciembre_{save_name}.csv'
+# Inputs to work
+# save_name = 'Generacion_2008'
+# file_names = [
+#     'Enero_abril_2008.csv',
+#     'Mayo_agosto_2008.csv',
+#     'Septiembre_diciembre_2008.csv'
 # ]
 # # Call the function to clean the year
 # clean_year(file_names, save_name)
 #
 # For desired month and year of energy demand data
 # Inputs to work
-d_month_list = ['MAYO']
-d_year = '2025'
-d_save_name = "Mayo"
+# d_month_list = ['MAYO']
+# d_year = '2025'
+# d_save_name = "Mayo"
 # Call the function to extract the desired month and year
 # desired_month_year(d_month_list, d_year, d_save_name)
 # save_name = 'May_2025'
@@ -47,12 +47,12 @@ d_save_name = "Mayo"
 # Extract data for a specific year and technology type"""
 #
 # # Inputs to work
-# year_selection = 2024
+# year_selection = 2023
 # technology = 'Turbina de Gas'
 # # Call the function to extract the technology for the year
 # extract_tecnologie(technology, year_selection)
 
 # Call the function to clean the technology for the year
-technology_files = 'Turbina de Gas'
-tecnology_name = 'Turbina de Gas'
-clean_technology(technology_files, tecnology_name)
+# technology_files = 'Turbina de Gas'
+# tecnology_name = 'Turbina de Gas'
+# clean_technology(technology_files, tecnology_name)

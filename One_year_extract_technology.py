@@ -104,19 +104,20 @@ def extract_tecnologie(tecnologia, year_selection):
         browser = playwright.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
-        page.set_default_timeout(60000) # Test with 60 seconds
+        page.set_default_timeout(90000) # Test with 90 seconds
         page.set_viewport_size({"width": 1280, "height": 720})
         page.goto("https://reportesbi.amm.org.gt/knowage/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE")
         page.get_by_role("link", name="Generación").click()
         page.get_by_role("link", name="Generación por Tecnología").click()
-        # page.wait_for_load_state("networkidle")
+        page.wait_for_load_state("networkidle")
         time.sleep(10)
 
         # Enter the new page table to select data
         page.locator("#iframeDoc").content_frame.locator("iframe").content_frame.locator(
             "iframe[name=\"documentFrame\"]").content_frame.get_by_role("button").filter(
             has_text=re.compile(r"^$")).click()
-        time.sleep(20)
+        print('Wait 30 seconds to load the page')
+        time.sleep(30)
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role(
             "button",name="Parameters").nth(1).click()
 

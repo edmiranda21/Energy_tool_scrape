@@ -108,10 +108,12 @@ def clean_year(file_names, save_name):
     for file in file_names:
         df_clean = clean(file)
         df_new.append(df_clean)
+        print(f'File: {file} '
+              f'Total data: {len(df_clean)}')
     df = pd.concat(df_new)
 
     # Save the joined dataframe to a new CSV file
-    df.to_csv(f'Generacion_{save_name}.csv', index=True)
+    df.to_csv(f'{save_name}.csv', index=True)
     print(f'Numero de datos: {len(df)}')
 
     # Erase the list of files
@@ -121,4 +123,4 @@ def clean_year(file_names, save_name):
         except OSError as e:
             print(f"Error deleting file {file}: {e}")
 
-    return print(f"Saved as 'Generacion_{save_name}.csv'")
+    return print(f"Saved as '{save_name}.csv'")
