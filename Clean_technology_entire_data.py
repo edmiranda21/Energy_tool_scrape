@@ -104,12 +104,22 @@ def clean_technology(technology_files, tecnology_name):
         print(f'File: {file} '
               f'Total data: {len(df_clean)}')
 
+    # Erase the files in the folder
+    for file in file_path.glob('*.csv'):
+        try:
+            os.remove(file)
+        except OSError as e:
+            print(f"Error deleting file {file}: {e}")
+
     df = pd.concat(df_new)
     # Sort by index
     df.sort_index(inplace=True)
-    year_name = min(df.index.year)
-    df.to_csv(f'Clean_{tecnology_name}_{year_name}.csv', index=True)
-    print(f'Data file save as: Clean_{tecnology_name}_{year_name}.csv '
-          f'Total data: {len(df)}')
+    # Save a csv for every year with
+    years_list = df.index.year.unique()
+    for year in years_list:
+        df_year = df.query('Year == @year')
+        df_year.to_csv(f'{file_path}/Clean_{tecnology_name}_{year}.csv', index=True)
+        print(f'Data file save as: {file_path}/Clean_{tecnology_name}_{year}.csv '
+          f'Total data: {len(df_year)}')
 
 

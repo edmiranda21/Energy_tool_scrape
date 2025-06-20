@@ -53,6 +53,6 @@ Extract data for a specific year
 # extract_tecnologie(technology, year_selection)
 
 # Call the function to clean the technology for the year
-# technology_files = 'Turbina de Gas'
-# tecnology_name = 'Turbina de Gas'
-# clean_technology(technology_files, tecnology_name)
+technology_files = 'Turbina de Gas'
+tecnology_name = 'Turbina de Gas'
+clean_technology(technology_files, tecnology_name)

@@ -4,3 +4,7 @@ __pycache__
 *.csv
 Old/
 Test.py
+Cloud.py
+.env
+Oracle_connection.py
+Insert_table_oracle.py

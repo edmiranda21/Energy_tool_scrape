@@ -104,13 +104,14 @@ def extract_tecnologie(tecnologia, year_selection):
         browser = playwright.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
-        page.set_default_timeout(90000) # Test with 90 seconds
+        page.set_default_timeout(100000) # Test with 100 seconds
         page.set_viewport_size({"width": 1280, "height": 720})
-        page.goto("https://reportesbi.amm.org.gt/knowage/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE")
+        page.goto("https://reportesbi.amm.org.gt")
         page.get_by_role("link", name="Generación").click()
         page.get_by_role("link", name="Generación por Tecnología").click()
         page.wait_for_load_state("networkidle")
-        time.sleep(10)
+        print('Wait 15 seconds to load the page')
+        time.sleep(15)
 
         # Enter the new page table to select data
         page.locator("#iframeDoc").content_frame.locator("iframe").content_frame.locator(
@@ -120,6 +121,8 @@ def extract_tecnologie(tecnologia, year_selection):
         time.sleep(30)
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role(
             "button",name="Parameters").nth(1).click()
+        print('Wait 30 seconds to load the page')
+        time.sleep(30)
 
         page.wait_for_load_state("networkidle")
     # Enter the parameter's options
@@ -259,7 +262,6 @@ def extract_tecnologie(tecnologia, year_selection):
 
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role(
             "button", name="Parameters").nth(1).click()
-        page.wait_for_load_state("networkidle")
         # Enter the parameter's options
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
             ".md-datepicker-input-container").first.click()
@@ -271,14 +273,14 @@ def extract_tecnologie(tecnologia, year_selection):
             "document-paramenter-element").filter(has_text="Fecha Inicial").get_by_role("textbox").fill(
             f"{fecha_inicial_4}")
         time.sleep(2)
+
         # Locate and add fecha final
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
             "document-paramenter-element").filter(has_text="Fecha Final").get_by_role("textbox").click()
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.locator(
             "document-paramenter-element").filter(has_text="Fecha Final").get_by_role("textbox").fill(
             f"{fecha_final_4}")
-        time.sleep(2)
-
+        time.sleep(1)
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role("button",
                                                                                                     name="Ejecutar").click()
 
@@ -300,3 +302,9 @@ def extract_tecnologie(tecnologia, year_selection):
         browser.close()
 
     return print('Done Extracting')
+
+# # Inputs to work
+# year_selection = 2024
+# technology = 'Turbina de Gas'
+# # Call the function to extract the technology for the year
+# extract_tecnologie(technology, year_selection)
