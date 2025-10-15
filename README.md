@@ -63,7 +63,7 @@ This companion project visualizes the data collected by this scraper tool throug
 The dashboard displays the data monthly instead of hourly, decision taken to reduce resource usage on a 
 free service provider like Hugging Face Space.
 
-- **Repository**: [Guatemala's energy generation dashboard](https://github.com/edmiranda21/guatemala-energy-dashboard)
+- **Repository**: [Guatemala's energy generation dashboard](https://github.com/edmiranda21/dashboardenergy_gt)
 - **Live Demo**: [Hugging Face Space](https://huggingface.co/spaces/edmiranda2301/Energy_gt_demo)
 
 **Key Features:**
