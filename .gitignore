@@ -10,3 +10,4 @@ Oracle_connection.py
 Insert_table_oracle.py
 Tests.ipynb
 .DS_Store
+Clean data/.DS_Store
