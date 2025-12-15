@@ -9,3 +9,4 @@ Cloud.py
 Oracle_connection.py
 Insert_table_oracle.py
 Tests.ipynb
+.DS_Store
