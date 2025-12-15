@@ -110,18 +110,18 @@ def extract_tecnologie(tecnologia, year_selection):
         page.get_by_role("link", name="Generación").click()
         page.get_by_role("link", name="Generación por Tecnología").click()
         page.wait_for_load_state("networkidle")
-        print('Wait 15 seconds to load the page')
-        time.sleep(15)
+        print('Wait 20 seconds to load the table default')
+        time.sleep(20)
 
         # Enter the new page table to select data
         page.locator("#iframeDoc").content_frame.locator("iframe").content_frame.locator(
             "iframe[name=\"documentFrame\"]").content_frame.get_by_role("button").filter(
             has_text=re.compile(r"^$")).click()
-        print('Wait 30 seconds to load the page')
-        time.sleep(30)
+        print('Wait 20 seconds to load the page')
+        time.sleep(20)
         page.locator("#iframeDoc").content_frame.locator("iframe").nth(1).content_frame.get_by_role(
             "button",name="Parameters").nth(1).click()
-        print('Wait 30 seconds to load the page')
+        print('Wait 30 seconds to load the page and extract the first trimester')
         time.sleep(30)
 
         page.wait_for_load_state("networkidle")
@@ -303,8 +303,8 @@ def extract_tecnologie(tecnologia, year_selection):
 
     return print('Done Extracting')
 
-# # Inputs to work
-# year_selection = 2024
-# technology = 'Turbina de Gas'
-# # Call the function to extract the technology for the year
-# extract_tecnologie(technology, year_selection)
+# Inputs to work
+year_selection = 2021
+technology = 'Hidroeléctrica'
+# Call the function to extract the technology for the year
+extract_tecnologie(technology, year_selection)

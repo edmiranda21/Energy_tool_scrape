@@ -38,36 +38,33 @@ def clean_tecnology(file, tecnology_name):
         if not line:
             continue
         #
-        # # Parse date row - improved pattern to capture various date formats and month indicators
-        date_match = re.match(r'(\d{4}-\d{2}-\d{2}),(\d{2}:\d{2}:\d{2}),(.+),(.+),(\d{2}:\d{2}:\d{2}),([-\d.]+)', line)
-        # print(date_match)
-        if date_match:
-            current_date = date_match.group(1)
-            day_of_week = date_match.group(4)
-            hour = date_match.group(5)  # Use the second time field (after day of week)
-            value = float(date_match.group(6))
-            # print(current_date, hour,day_of_week, value)
+        # If the line has more than 1 comma print it for debugging
+        if line.count(',') > 2:
+            parts = line.split(',')
+            current_date = parts[0]
+            day_of_week = parts[3]
+            hour = parts[4]
+            # If there is more than one part after the 5th, join them as value and transform to float
+            value = ','.join(parts[5:]) if len(parts) > 1 else None
+            # Eliminate the "" in the value that are in the begging and the end in some cases
+            value = value.replace('"', '')
+            # print(f'--{current_date} - {hour} -{day_of_week} - {value}--')
             data.append([current_date, hour, day_of_week, value])
         else:
-        #     # Parse hour row with more flexible pattern to account for missing data
-            hour_match = re.match(r'^(\d{2}:\d{2}:\d{2}),([-\d.]+)$', line)
-            # print(hour_match)
-            if hour_match and current_date:
-                hour = hour_match.group(1)
-                value = float(hour_match.group(2))
-                # print(current_date, hour, day_of_week, value)
+            # print(line)
+            line = line.replace('"', '')
+            # if there is two, split by comma replace the second one with nothing
+            parts = line.split(',')
+            # print(parts)
+            hour = parts[0]
+            if len(parts) > 2:
+                value_long = float(parts[1] + parts[2])
+                # print(f'Check: {current_date} - {hour} - {day_of_week} - {value_long}')
+                data.append([current_date, hour, day_of_week, value_long])
+            else:
+                value = parts[1]
+                # print(f'Check: {current_date} - {hour} - {day_of_week} - {value}')
                 data.append([current_date, hour, day_of_week, value])
-            # Handle missing hour entries (e.g., where some hours are skipped)
-            elif current_date and "," in line:
-                parts = line.split(',')
-                if len(parts) == 2 and re.match(r'\d{2}:\d{2}:\d{2}', parts[0]):
-                    hour = parts[0]
-                    try:
-                        value = float(parts[1])
-                        data.append([current_date, hour, day_of_week, value])
-                    except ValueError:
-                        # Skip lines that don't have proper numeric values
-                        continue
     # Convert to DataFrame
     df = pd.DataFrame(data, columns=['Date', 'Hour', 'Day (Spanish)', 'Potencia'])
     df['Tecnología'] = tecnology_name
@@ -96,24 +93,32 @@ def clean_technology(technology_files, tecnology_name):
     home = os.getcwd()
     # Create the full path for the new folder
     file_path = Path(home + f'/{technology_files}')
+    print(file_path)
+
 
     df_new = []
     for file in file_path.glob('*.csv'):
+        if 'Clean' in file.name:
+                continue
         df_clean = clean_tecnology(file, tecnology_name)
         df_new.append(df_clean)
         print(f'File: {file} '
               f'Total data: {len(df_clean)}')
 
     # Erase the files in the folder
-    for file in file_path.glob('*.csv'):
-        try:
-            os.remove(file)
-        except OSError as e:
-            print(f"Error deleting file {file}: {e}")
+    # for file in file_path.glob('*.csv'):
+    #     if 'Clean' in file.name:
+    #         continue
+    #     try:
+    #         os.remove(file)
+    #     except OSError as e:
+    #         print(f"Error deleting file {file}: {e}")
 
     df = pd.concat(df_new)
     # Sort by index
     df.sort_index(inplace=True)
+    df['Potencia'] = df['Potencia'].astype(str).str.replace('"', '', regex=False).str.replace(',', '', regex=False)
+    df['Potencia'] = df['Potencia'].astype(float)
     # Save a csv for every year with
     years_list = df.index.year.unique()
     for year in years_list:
@@ -122,4 +127,7 @@ def clean_technology(technology_files, tecnology_name):
         print(f'Data file save as: {file_path}/Clean_{tecnology_name}_{year}.csv '
           f'Total data: {len(df_year)}')
 
-
+# Test
+technology_files = 'Hidroeléctrica'
+tecnology_name = 'Hidroeléctrica'
+clean_technology(technology_files, tecnology_name)

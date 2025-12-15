@@ -2,6 +2,7 @@ import pandas as pd
 import csv
 from datetime import datetime, timedelta
 import os
+from pathlib import Path
 pd.options.mode.copy_on_write = True
 
 def transform_long_clean(df_old):
@@ -104,8 +105,12 @@ def clean_year(file_names, save_name):
     Returns:
     None: The function saves the cleaned data to a CSV file and prints the number of records.
     """
+    # Get the current working directory
+    home = os.getcwd()
+
     df_new = []
     for file in file_names:
+        file = Path(home + "/Demand"+ f'/{file}')
         df_clean = clean(file)
         df_new.append(df_clean)
         print(f'File: {file} '
@@ -113,14 +118,24 @@ def clean_year(file_names, save_name):
     df = pd.concat(df_new)
 
     # Save the joined dataframe to a new CSV file
-    df.to_csv(f'{save_name}.csv', index=True)
+    df.to_csv(f'{home}/Demand/Clean_{save_name}.csv', index=True)
     print(f'Numero de datos: {len(df)}')
 
     # Erase the list of files
-    for file in file_names:
-        try:
-            os.remove(file)
-        except OSError as e:
-            print(f"Error deleting file {file}: {e}")
+    # for file in file_names:
+    #     try:
+    #         os.remove(file)
+    #     except OSError as e:
+    #         print(f"Error deleting file {file}: {e}")
 
-    return print(f"Saved as '{save_name}.csv'")
+    return print(f"Saved as '{home}/Demand/Clean_{save_name}.csv'")
+
+# Inputs to work
+save_name = 'Generacion_2025'
+file_names = [
+    'Enero_abril_2025.csv',
+    'Mayo_agosto_2025.csv',
+    'Septiembre_diciembre_2025.csv'
+]
+# Call the function to clean the year
+clean_year(file_names, save_name)

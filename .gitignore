@@ -8,3 +8,4 @@ Cloud.py
 .env
 Oracle_connection.py
 Insert_table_oracle.py
+Tests.ipynb

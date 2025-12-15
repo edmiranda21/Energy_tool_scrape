@@ -12,7 +12,10 @@ There are two main scrapers:
 - Data is extracted in hourly format, with each iteration covering a 4-month period for the desired year.
 - The script `One_year_extract.py` extract the data and saved as unstructured and uncleaned CSV files.
 - The script `Extrac_desited_month_year.py` extract the data and saved as an unstructured and uncleaned CSV file for a specific month and year.
+- The script `Multiple_year_extract_tecnology.py` extract the data and saved as an unstructured and uncleaned CSV file for specific years.
 - The script `clean_year.py` joins, cleans, and formats the data into a wide-format CSV, then deletes the intermediate files.
+- The script `Clean_technology_entire_data.py` joins, cleans, and formats the data into a wide-format CSV, for multiples years for a specific technology. It will create a CSV for each year.
+
 
 ### 2. Generation by Technology type Scraper
 - Also uses Playwright; the website is even more buggy for this data.
@@ -48,6 +51,7 @@ Energy_tool_scrape/
 ├── One_year_extract.py                   # Scraper for energy demand data
 │   └── Clean_entire_year.py              # Cleaning script for energy demand data
 │   └── Extract_desired_month_year.py      # Scraper for energy demand data for a specific month and year
+├── Multiple_year_extract_technology.py   # Scraper for generation by technology type for multiple years
 │
 ├── One_year_extract_technology.py        # Scraper for generation by technology type
 │   └── Clean_technology_entire_data.py    # Cleaning script for generation by technology type

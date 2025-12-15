@@ -12,19 +12,19 @@ from Clean_technology_entire_data import *
 Extract data for a specific year
 """
 # Inputs to work
-# generation_year = 2008
-# Call the function to clean the year
+# generation_year = 2025
+# # Call the function to clean the year
 # extract_generation_data(generation_year)
 #
 # """
 # Clean files later will be saved as a unique files used will be erased
 # """
-# Inputs to work
-# save_name = 'Generacion_2008'
+# # Inputs to work
+# save_name = 'Generacion_2025'
 # file_names = [
-#     'Enero_abril_2008.csv',
-#     'Mayo_agosto_2008.csv',
-#     'Septiembre_diciembre_2008.csv'
+#     'Enero_abril_2025.csv',
+#     'Mayo_agosto_2025.csv',
+#     'Septiembre_diciembre_2025.csv'
 # ]
 # # Call the function to clean the year
 # clean_year(file_names, save_name)
@@ -53,6 +53,6 @@ Extract data for a specific year
 # extract_tecnologie(technology, year_selection)
 
 # Call the function to clean the technology for the year
-technology_files = 'Turbina de Gas'
-tecnology_name = 'Turbina de Gas'
-clean_technology(technology_files, tecnology_name)
+# technology_files = 'Motor Reciprocante'
+# tecnology_name = 'Motor Reciprocante'
+# clean_technology(technology_files, tecnology_name)

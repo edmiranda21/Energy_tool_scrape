@@ -7,7 +7,7 @@ import datetime
 month_list = ['ENERO','FEBRERO', 'MARZO','ABRIL']
 month_list_2 = ['MAYO', 'JUNIO', 'JULIO', 'AGOSTO']
 month_list_3 = ['SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-year_selection = 2024
+year_selection = 2025
 
 # Function to save the table content to a CSV file
 def save_to_csv(table_locator, save_name):
